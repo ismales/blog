@@ -1,13 +1,13 @@
-import styles from "./App.module.scss";
-
+import { Outlet } from "react-router";
 import Header from "../Header/Header";
-import Main from "../Main/Main";
+
+import styles from "./App.module.scss";
 
 export default function App() {
   return (
     <div className={styles.app}>
       <Header />
-      <Main />
+      <Outlet />
     </div>
   );
 }

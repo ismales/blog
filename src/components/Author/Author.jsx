@@ -5,9 +5,7 @@ import styles from "./Author.module.scss";
 
 const { Title } = Typography;
 
-export default function Author(props) {
-  const { author, createdAt } = props;
-
+export default function Author({ author, createdAt }) {
   return (
     <Title level={4} style={{ margin: 0 }} className={styles["author-container"]}>
       <div className={styles["author-name"]}>

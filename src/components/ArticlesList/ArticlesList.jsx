@@ -1,31 +1,43 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ConfigProvider, Pagination } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchArticles } from "../../store/articlesSlice";
-
-import Article from "../Article/Article";
-
+import { useGetAllArticlesQuery } from "../../redux/articlesApi";
+import ArticlePreview from "../ArticlePreview/ArticlePreview";
 import styles from "./ArticlesList.module.scss";
 
 export default function ArticlesList() {
-  const dispatch = useDispatch();
-  const articles = useSelector((state) => state.articles.articles);
-
-  useEffect(() => {
-    dispatch(fetchArticles());
-  }, [dispatch]);
-
   const [currentPage, setCurrentPage] = useState(1);
-
   const itemsPerPage = 5;
+  const offset = (currentPage - 1) * itemsPerPage;
+  const { data, isLoading, isError } = useGetAllArticlesQuery(offset);
+
+  const { articles = [], articlesCount = 0 } = data || {};
 
   const onPageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedItems = articles.slice(startIndex, startIndex + itemsPerPage);
+  const content = (
+    <>
+      <ul className={styles.articles}>
+        {articles.map((article) => (
+          <li key={article.slug}>
+            <ArticlePreview article={article} />
+          </li>
+        ))}
+      </ul>
+      <Pagination
+        current={currentPage}
+        pageSize={itemsPerPage}
+        total={articlesCount}
+        onChange={onPageChange}
+        showSizeChanger={false}
+      />
+    </>
+  );
+
+  const loader = isLoading && <div>Loading...</div>;
+  const error = isError && <div>Error</div>;
 
   return (
     <ConfigProvider
@@ -39,18 +51,7 @@ export default function ArticlesList() {
         },
       }}
     >
-      <ul className={styles.articles}>
-        {paginatedItems.map((article) => (
-          <Article key={article.slug} article={article} />
-        ))}
-      </ul>
-      <Pagination
-        current={currentPage}
-        pageSize={itemsPerPage}
-        total={articles.length}
-        onChange={onPageChange}
-        showSizeChanger={false}
-      />
+      {error || loader || content}
     </ConfigProvider>
   );
 }
