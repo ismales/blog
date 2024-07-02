@@ -12,5 +12,10 @@ module.exports = {
     quotes: 0,
     "react/react-in-jsx-scope": 0,
     "comma-dangle": 0,
+    "max-len": 0,
+    "jsx-quotes": 0,
+    "no-param-reassign": 0,
+    "import/no-extraneous-dependencies": 0,
+    "react/prop-types": 0,
   },
 };

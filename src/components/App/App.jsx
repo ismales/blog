@@ -1,5 +1,13 @@
-import "./App.css";
+import styles from "./App.module.scss";
+
+import Header from "../Header/Header";
+import Main from "../Main/Main";
 
 export default function App() {
-  return <p className="read-the-docs">her</p>;
+  return (
+    <div className={styles.app}>
+      <Header />
+      <Main />
+    </div>
+  );
 }

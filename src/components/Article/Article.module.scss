@@ -1,0 +1,42 @@
+.article {
+  height: 140px;
+  padding: 15px;
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+  background-color: white;
+  box-shadow: 0px 4px 12px 0px #00000026;
+}
+
+.title-container {
+  width: 300px;
+}
+
+.likes {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: url("../../Img/Heart.svg") no-repeat center center / contain;
+  background-color: transparent;
+  border: none;
+
+  cursor: pointer;
+
+  &:hover,
+  .active {
+    background-image: url("../../Img/Heart-active.svg");
+  }
+}
+
+.tags {
+  padding: 0;
+  list-style: none;
+
+  display: flex;
+  flex-direction: row;
+}
