@@ -17,7 +17,5 @@
 
 .article-body {
   flex: 1;
-  white-space: nowrap;
-  overflow: scroll;
-  text-overflow: ellipsis;
+  overflow-y: scroll;
 }
