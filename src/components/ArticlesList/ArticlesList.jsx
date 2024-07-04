@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ConfigProvider, Pagination } from "antd";
 import { useGetAllArticlesQuery } from "../../redux/articlesApi";
 import ArticlePreview from "../ArticlePreview/ArticlePreview";
 import styles from "./ArticlesList.module.scss";
 
 export default function ArticlesList() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(pageParam);
+
   const itemsPerPage = 5;
   const offset = (currentPage - 1) * itemsPerPage;
   const { data, isLoading, isError } = useGetAllArticlesQuery(offset);
@@ -14,8 +21,13 @@ export default function ArticlesList() {
 
   const onPageChange = (page) => {
     setCurrentPage(page);
+    navigate(`?page=${page}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    setCurrentPage(pageParam);
+  }, [pageParam]);
 
   const content = (
     <>

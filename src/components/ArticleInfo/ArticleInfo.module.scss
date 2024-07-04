@@ -5,6 +5,9 @@
 
 .title-container {
   width: 300px;
+  & h3 {
+    width: 300px;
+  }
 }
 
 .likes {

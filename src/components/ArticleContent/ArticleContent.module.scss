@@ -18,4 +18,6 @@
 .article-body {
   flex: 1;
   overflow-y: scroll;
+  word-wrap: break-word;
+  word-break: break-all;
 }

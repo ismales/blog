@@ -20,17 +20,22 @@
     margin-right: auto;
     font-weight: 400;
   }
+}
 
-  .sign-in {
-    padding: 10px;
+.logInOutButton {
+  height: 50px;
+  border: 1px solid;
+  & > span {
+    margin-right: 0;
   }
+}
 
-  .sign-up {
-    width: 110px;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #52c41a;
-    color: #52c41a;
-    border-radius: 5px;
-  }
+.lightfreen {
+  border: 1px solid #52c41a;
+  color: #52c41a;
+}
+
+.black {
+  border-color: black;
+  color: black;
 }
