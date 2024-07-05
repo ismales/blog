@@ -1,33 +1,46 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Typography, Button } from "antd";
-
+import { Button, message, Typography } from "antd";
+import { logOut } from "../../redux/userSlice";
 import Author from "../Author/Author";
-
 import styles from "./Header.module.scss";
 
 const { Title } = Typography;
 
 export default function Header() {
-  const isLogged = true;
+  const dispatch = useDispatch();
+  const { token, username, image } = useSelector((state) => state.user);
+
+  const handleLogOut = () => {
+    message.success("Log out!");
+    dispatch(logOut());
+  };
 
   const logInOutButton = (
-    <Button className={`${styles.logInOutButton} ${!isLogged ? styles.lightfreen : styles.black}`}>
-      {isLogged ? "Log Out" : "Sign Up"}
-    </Button>
+    <Link to={token ? "/" : "/sign-up"}>
+      <Button
+        className={`${styles.logInOutButton} ${!token ? styles.lightfreen : styles.black}`}
+        onClick={token && handleLogOut}
+      >
+        {token ? "Log Out" : "Sign Up"}
+      </Button>
+    </Link>
   );
 
   const isNotLoggedContent = (
     <>
-      {" "}
       <Link to='/'>
         <Title level={4} style={{ marginBlock: 0 }}>
           Realworld blog
         </Title>
       </Link>
-      <Button type='text'>Sign In</Button>
+      <Link to='/sign-in'>
+        <Button type='text'>Sign In</Button>
+      </Link>
       {logInOutButton}
     </>
   );
+
   const isLoggedContent = (
     <>
       <Link to='/'>
@@ -38,13 +51,14 @@ export default function Header() {
       <Button className={styles.lightfreen}>Create article</Button>
       <Author
         author={{
-          username: "@ismail_a_a",
-          image: "https://static.productionready.io/images/smiley-cyrus.jpg",
+          username,
+          image,
         }}
         toOpen='true'
       />
       {logInOutButton}
     </>
   );
-  return <header className={styles.header}>{isLogged ? isLoggedContent : isNotLoggedContent}</header>;
+
+  return <header className={styles.header}>{token ? isLoggedContent : isNotLoggedContent}</header>;
 }

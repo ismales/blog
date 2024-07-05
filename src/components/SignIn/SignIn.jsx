@@ -1,19 +1,37 @@
-import { ConfigProvider, Flex, Typography, Form, Input, Button } from "antd";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { ConfigProvider, Flex, Typography, Form, Input, Button, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.scss";
+import { useSigInMutation } from "../../redux/userApi";
+import { signIn } from "../../redux/userSlice";
 
 const { Title, Text } = Typography;
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [logInAccount, { isLoading }] = useSigInMutation();
 
-  const handleFinish = (values) => {
-    console.log("Form values:", values);
+  const handleFinish = async ({ email, password }) => {
+    const request = {
+      user: {
+        email,
+        password,
+      },
+    };
+
+    await logInAccount(request)
+      .unwrap()
+      .then((data) => {
+        message.success("Sign in!");
+        navigate("/");
+        dispatch(signIn(data.user));
+      })
+      .catch(() => message.error("Email or password is invalid"));
   };
 
-  const handleFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  if (isLoading) return <div>Loading</div>;
 
   return (
     <ConfigProvider
@@ -34,17 +52,10 @@ export default function SignIn() {
     >
       <Flex vertical align='center' justify='center' className={styles["sign-in-container"]}>
         <Title level={4}>Sign In</Title>
-        <Form
-          form={form}
-          layout='vertical'
-          size='large'
-          style={{ width: "100%" }}
-          onFinish={handleFinish}
-          onFinishFailed={handleFinishFailed}
-        >
+        <Form form={form} layout='vertical' size='large' style={{ width: "100%" }} onFinish={handleFinish}>
           <Form.Item
             label='Email adress'
-            name='Email adress'
+            name='email'
             rules={[
               { required: true, message: "Please input your email!" },
               { type: "email", message: "Please enter a valid email!" },
@@ -52,7 +63,7 @@ export default function SignIn() {
           >
             <Input placeholder='Email adress' />
           </Form.Item>
-          <Form.Item label='Password' name='Password' rules={[{ required: true, message: "Please input your email!" }]}>
+          <Form.Item label='Password' name='password' rules={[{ required: true, message: "Please input your email!" }]}>
             <Input.Password placeholder='Password' />
           </Form.Item>
           <Form.Item>

@@ -1,17 +1,45 @@
-import { ConfigProvider, Flex, Typography, Form, Input, Button } from "antd";
+import { useNavigate } from "react-router";
+import { ConfigProvider, Flex, Typography, Form, Input, Button, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./Profile.module.scss";
+import { useEditProfileMutation } from "../../redux/userApi";
+import { editProfile } from "../../redux/userSlice";
 
 const { Title } = Typography;
 
 export default function Profile() {
+  const dispatch = useDispatch();
+  const { username: oldUsername, email: oldEmail, image: oldImage } = useSelector((state) => state.user);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const [updateProfile] = useEditProfileMutation();
 
-  const handleFinish = (values) => {
-    console.log("Form values:", values);
-  };
+  const handleFinish = async ({ username, email, password, image }) => {
+    const request = {
+      user: {
+        username,
+        email,
+        password,
+        image,
+      },
+    };
 
-  const handleFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    await updateProfile(request)
+      .unwrap()
+      .then((data) => {
+        message.success("Profile updated!");
+        dispatch(editProfile(data.user));
+      })
+      .catch((e) => {
+        if (e.data.errors.username) {
+          message.error(`Username ${username} already exists.`);
+        }
+
+        if (e.data.errors.email) {
+          message.error(`Email ${email} already exists.`);
+        }
+        message.error(e.data.errors);
+      });
   };
 
   return (
@@ -33,7 +61,13 @@ export default function Profile() {
     >
       <Flex vertical align='center' justify='center' className={styles["profile-container"]}>
         <Title level={4}>Edit Profile</Title>
-        <Form form={form} layout='vertical' size='large' onFinish={handleFinish} onFinishFailed={handleFinishFailed}>
+        <Form
+          form={form}
+          layout='vertical'
+          size='large'
+          onFinish={handleFinish}
+          initialValues={{ username: oldUsername, email: oldEmail, image: oldImage }}
+        >
           <Form.Item
             label='Username'
             name='username'
@@ -43,7 +77,7 @@ export default function Profile() {
           </Form.Item>
           <Form.Item
             label='Email address'
-            name='Email'
+            name='email'
             rules={[
               { required: true, message: "Please input your email!" },
               { type: "email", message: "Please enter a valid email!" },
@@ -53,22 +87,15 @@ export default function Profile() {
           </Form.Item>
           <Form.Item
             label='New Password'
-            name='NewPassword'
-            rules={[
-              { required: true, message: "Please input your password!" },
-              { min: 6, max: 40, message: "Password must be between 6 and 40 characters" },
-            ]}
+            name='password'
+            rules={[{ min: 6, max: 40, message: "Password must be between 6 and 40 characters" }]}
           >
             <Input.Password placeholder='New password' />
           </Form.Item>
           <Form.Item
             label='Avatar image (url)'
-            name='NewAvatar'
-            valuePropName='NewAvatar'
-            rules={[
-              { required: true, message: "Please input avatar URL!" },
-              { type: "url", message: "Please enter a valid URL!" },
-            ]}
+            name='image'
+            rules={[{ type: "url", message: "Please enter a valid URL!" }]}
           >
             <Input placeholder='Avatar image' />
           </Form.Item>

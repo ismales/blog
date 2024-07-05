@@ -6,11 +6,9 @@ import ArticlePreview from "../ArticlePreview/ArticlePreview";
 import styles from "./ArticlesList.module.scss";
 
 export default function ArticlesList() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const searchParams = new URLSearchParams(location.search);
-  const pageParam = parseInt(searchParams.get("page")) || 1;
+  const pageParam = new URLSearchParams(useLocation().search).get("page") || 1;
   const [currentPage, setCurrentPage] = useState(pageParam);
 
   const itemsPerPage = 5;

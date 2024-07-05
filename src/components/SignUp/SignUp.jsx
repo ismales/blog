@@ -1,19 +1,48 @@
-import { ConfigProvider, Flex, Typography, Form, Input, Checkbox, Button, Divider } from "antd";
-import { Link } from "react-router-dom";
+import { ConfigProvider, Flex, Typography, Form, Input, Checkbox, Button, Divider, message } from "antd";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { signIn } from "../../redux/userSlice";
+
 import styles from "./SignUp.module.scss";
+import { useRegisterUserMutation } from "../../redux/userApi";
 
 const { Title, Text } = Typography;
 
 export default function SignUp() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [createAccount, { isLoading: isCreating }] = useRegisterUserMutation();
 
-  const handleFinish = (values) => {
-    console.log("Form values:", values);
+  const handleFinish = async ({ username, email, password }) => {
+    const request = {
+      user: {
+        username,
+        email,
+        password,
+      },
+    };
+    localStorage.removeItem("token");
+
+    await createAccount(request)
+      .unwrap()
+      .then((data) => {
+        message.success("Account created successfully!");
+        navigate("/");
+        dispatch(signIn(...data.user));
+      })
+      .catch((e) => {
+        if (e.data.errors.username) {
+          message.error(`Username ${username} already exists.`);
+        }
+
+        if (e.data.errors.email) {
+          message.error(`Email ${email} already exists.`);
+        }
+      });
   };
 
-  const handleFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  if (isCreating) return <div>Loading</div>;
 
   return (
     <ConfigProvider
@@ -34,7 +63,7 @@ export default function SignUp() {
     >
       <Flex vertical align='center' justify='center' className={styles["sign-up-container"]}>
         <Title level={4}>Create new account</Title>
-        <Form form={form} layout='vertical' size='large' onFinish={handleFinish} onFinishFailed={handleFinishFailed}>
+        <Form form={form} layout='vertical' size='large' onFinish={handleFinish}>
           <Form.Item
             label='Username'
             name='username'
