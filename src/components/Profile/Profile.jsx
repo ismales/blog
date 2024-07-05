@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router";
 import { ConfigProvider, Flex, Typography, Form, Input, Button, message } from "antd";
+import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./Profile.module.scss";
 import { useEditProfileMutation } from "../../redux/userApi";
@@ -9,9 +9,9 @@ const { Title } = Typography;
 
 export default function Profile() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { username: oldUsername, email: oldEmail, image: oldImage } = useSelector((state) => state.user);
   const [form] = Form.useForm();
-  const navigate = useNavigate();
   const [updateProfile] = useEditProfileMutation();
 
   const handleFinish = async ({ username, email, password, image }) => {
@@ -29,6 +29,7 @@ export default function Profile() {
       .then((data) => {
         message.success("Profile updated!");
         dispatch(editProfile(data.user));
+        navigate("/");
       })
       .catch((e) => {
         if (e.data.errors.username) {

@@ -6,6 +6,9 @@ import ArticlesList from "./components/ArticlesList/ArticlesList";
 import SignUp from "./components/SignUp/SignUp";
 import SignIn from "./components/SignIn/SignIn";
 import Profile from "./components/Profile/Profile";
+import CreateArticle from "./components/CreateArticle/CreateArticle";
+import EditArticle from "./components/EditArticle/EditArticle";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +27,19 @@ const router = createBrowserRouter([
         path: "/articles/:slug",
         element: <ArticleContent />,
       },
+      {
+        path: "/articles/:slug/edit",
+        element: (
+          <PrivateRoute>
+            <EditArticle />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/new-article",
+        element: <CreateArticle />,
+      },
+
       {
         path: "/sign-up",
         element: <SignUp />,

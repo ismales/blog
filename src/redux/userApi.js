@@ -16,6 +16,7 @@ export const userApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["User"],
   endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (body) => ({
@@ -23,6 +24,7 @@ export const userApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["User"],
     }),
     sigIn: builder.mutation({
       query: (body) => ({
@@ -30,6 +32,11 @@ export const userApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["User"],
+    }),
+    getUser: builder.query({
+      query: () => "/user",
+      providesTags: ["User"],
     }),
     editProfile: builder.mutation({
       query: (body) => ({
@@ -37,8 +44,9 @@ export const userApi = createApi({
         method: "PUT",
         body,
       }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
 
-export const { useRegisterUserMutation, useSigInMutation, useEditProfileMutation } = userApi;
+export const { useRegisterUserMutation, useSigInMutation, useGetUserQuery, useEditProfileMutation } = userApi;
