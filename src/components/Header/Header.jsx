@@ -4,16 +4,12 @@ import { Button, message, Typography } from "antd";
 import { logOut } from "../../redux/userSlice";
 import Author from "../Author/Author";
 import styles from "./Header.module.scss";
-// import { useGetUserQuery } from "../../redux/userApi";
 
 const { Title } = Typography;
 
 export default function Header() {
   const dispatch = useDispatch();
   const { token, username, image } = useSelector((state) => state.user);
-  // const { data = [] } = useGetUserQuery();
-  // const { token, username, image } = data.user || {};
-  // console.log(token, username, image);
 
   const handleLogOut = () => {
     message.success("Log out!");

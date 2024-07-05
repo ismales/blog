@@ -1,7 +1,7 @@
 import Markdown from "react-markdown";
 import { useNavigate, useParams } from "react-router";
 import { useSelector } from "react-redux";
-import { Button, Flex, message, Popconfirm } from "antd";
+import { ConfigProvider, Button, Flex, message, Popconfirm } from "antd";
 import { useDeleteArticleMutation, useGetArticleQuery } from "../../redux/articlesApi";
 import ArticleInfo from "../ArticleInfo/ArticleInfo";
 import Author from "../Author/Author";
@@ -37,16 +37,12 @@ export default function ArticleContent() {
       >
         <Button danger>Delete</Button>
       </Popconfirm>
-      <Button
-        style={{ border: "1px solid #52c41a", color: "#52c41a" }}
-        onClick={() => navigate(`/articles/${slug}/edit`)}
-      >
-        Edit
-      </Button>
+      <Button onClick={() => navigate(`/articles/${slug}/edit`)}>Edit</Button>
     </Flex>
   );
 
   const load = isLoading && <div>Loading</div>;
+
   const content = !isLoading && (
     <div className={styles.article}>
       <div className={styles["article-short-info"]}>
@@ -61,9 +57,18 @@ export default function ArticleContent() {
   );
 
   return (
-    <>
+    <ConfigProvider
+      theme={{
+        components: {
+          Button: {
+            defaultColor: "#52c41a",
+            defaultBorderColor: "#52c41a",
+          },
+        },
+      }}
+    >
       {load}
       {content}
-    </>
+    </ConfigProvider>
   );
 }

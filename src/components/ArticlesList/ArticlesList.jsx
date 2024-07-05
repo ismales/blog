@@ -13,9 +13,7 @@ export default function ArticlesList() {
 
   const itemsPerPage = 5;
   const offset = (currentPage - 1) * itemsPerPage;
-  const { data, isLoading, isError } = useGetAllArticlesQuery(offset, {
-    pollingInterval: 30000,
-  });
+  const { data, isLoading, isError } = useGetAllArticlesQuery(offset);
 
   const { articles = [], articlesCount = 0 } = data || {};
 

@@ -25,11 +25,10 @@
   border: none;
 
   cursor: pointer;
+}
 
-  &:hover,
-  .active {
-    background-image: url("../../Img/Heart-active.svg");
-  }
+.active {
+  background-image: url("../../Img/Heart-active.svg");
 }
 
 .tags {

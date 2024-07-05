@@ -54,6 +54,20 @@ export const articlesApi = createApi({
       }),
       invalidatesTags: ["Articles"],
     }),
+    likeArticle: builder.mutation({
+      query: (slug) => ({
+        url: `/articles/${slug}/favorite`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Articles"],
+    }),
+    unLikeArticle: builder.mutation({
+      query: (slug) => ({
+        url: `/articles/${slug}/favorite`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Articles"],
+    }),
   }),
 });
 
@@ -63,4 +77,6 @@ export const {
   useAddArticleMutation,
   useEditArticleMutation,
   useDeleteArticleMutation,
+  useLikeArticleMutation,
+  useUnLikeArticleMutation,
 } = articlesApi;
