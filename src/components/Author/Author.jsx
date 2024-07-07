@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import { format } from "date-fns";
-
 import { Link } from "react-router-dom";
+
 import styles from "./Author.module.scss";
 
 const { Title } = Typography;

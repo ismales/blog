@@ -5,10 +5,7 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://blog.kata.academy/api/",
     prepareHeaders: (headers) => {
-      let token = null;
-      if (localStorage.getItem("user")) {
-        token = JSON.parse(localStorage.getItem("user")).token;
-      }
+      const token = localStorage.getItem("token") || null;
       if (token) {
         headers.set("Authorization", `Token ${token}`);
       }
@@ -26,13 +23,14 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    sigIn: builder.mutation({
+    signIn: builder.mutation({
       query: (body) => ({
         url: "/users/login",
         method: "POST",
         body,
       }),
       invalidatesTags: ["User"],
+      providesTags: ["User"], // добавлено
     }),
     getUser: builder.query({
       query: () => "/user",
@@ -49,4 +47,4 @@ export const userApi = createApi({
   }),
 });
 
-export const { useRegisterUserMutation, useSigInMutation, useGetUserQuery, useEditProfileMutation } = userApi;
+export const { useRegisterUserMutation, useSignInMutation, useGetUserQuery, useEditProfileMutation } = userApi;

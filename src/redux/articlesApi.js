@@ -4,11 +4,8 @@ export const articlesApi = createApi({
   reducerPath: "articlesApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://blog.kata.academy/api/",
-    prepareHeaders: (headers) => {
-      let token = null;
-      if (localStorage.getItem("user")) {
-        token = JSON.parse(localStorage.getItem("user")).token;
-      }
+    prepareHeaders: (headers, { getState }) => {
+      const { token } = getState().token;
       if (token) {
         headers.set("Authorization", `Token ${token}`);
       }
@@ -30,6 +27,7 @@ export const articlesApi = createApi({
     }),
     getArticle: builder.query({
       query: (slug) => `/articles/${slug}`,
+      providesTags: ["Articles"],
     }),
     addArticle: builder.mutation({
       query: (body) => ({

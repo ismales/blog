@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userSlice";
+import tokenReducer from "./tokenSlice";
 import { articlesApi } from "./articlesApi";
 import { userApi } from "./userApi";
 
 export default configureStore({
   reducer: {
-    user: userReducer,
+    token: tokenReducer,
     [articlesApi.reducerPath]: articlesApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
   },

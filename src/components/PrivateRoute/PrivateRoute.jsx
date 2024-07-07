@@ -1,10 +1,7 @@
 import { Navigate } from "react-router-dom";
-
-const isAuth = () => {
-  const user = localStorage.getItem("user");
-  return !!user;
-};
+import { useSelector } from "react-redux";
 
 export default function PrivateRoute({ children }) {
-  return isAuth() ? children : <Navigate to='/sign-in' replace />;
+  const { token } = useSelector((state) => state.token);
+  return token ? children : <Navigate to='/sign-in' replace />;
 }

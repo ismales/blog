@@ -1,20 +1,29 @@
+import { useEffect } from "react";
 import { ConfigProvider, Flex, Typography, Form, Input, Button, message } from "antd";
 import { useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "antd/es/form/Form";
+import { useGetUserQuery, useEditProfileMutation } from "../../redux/userApi";
 import styles from "./Profile.module.scss";
-import { useEditProfileMutation } from "../../redux/userApi";
-import { editProfile } from "../../redux/userSlice";
 
 const { Title } = Typography;
 
 export default function Profile() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { username: oldUsername, email: oldEmail, image: oldImage } = useSelector((state) => state.user);
-  const [form] = Form.useForm();
+  const { data = {} } = useGetUserQuery();
+  const { user = {} } = data;
+  const { username: oldUsername, email: oldEmail, image: oldImage } = user;
+  const [form] = useForm();
   const [updateProfile] = useEditProfileMutation();
 
-  const handleFinish = async ({ username, email, password, image }) => {
+  useEffect(() => {
+    form.setFieldsValue({
+      oldUsername,
+      oldEmail,
+      oldImage,
+    });
+  }, [form, oldUsername, oldEmail, oldImage]);
+
+  const handleFinish = async ({ oldUsername: username, oldEmail: email, password, oldImage: image }) => {
     const request = {
       user: {
         username,
@@ -26,9 +35,8 @@ export default function Profile() {
 
     await updateProfile(request)
       .unwrap()
-      .then((data) => {
+      .then(() => {
         message.success("Profile updated!");
-        dispatch(editProfile(data.user));
         navigate("/");
       })
       .catch((e) => {
@@ -62,23 +70,17 @@ export default function Profile() {
     >
       <Flex vertical align='center' justify='center' className={styles["profile-container"]}>
         <Title level={4}>Edit Profile</Title>
-        <Form
-          form={form}
-          layout='vertical'
-          size='large'
-          onFinish={handleFinish}
-          initialValues={{ username: oldUsername, email: oldEmail, image: oldImage }}
-        >
+        <Form form={form} layout='vertical' size='large' onFinish={handleFinish}>
           <Form.Item
             label='Username'
-            name='username'
+            name='oldUsername'
             rules={[{ required: true, message: "Please input your username!" }]}
           >
             <Input placeholder='New username' />
           </Form.Item>
           <Form.Item
             label='Email address'
-            name='email'
+            name='oldEmail'
             rules={[
               { required: true, message: "Please input your email!" },
               { type: "email", message: "Please enter a valid email!" },
@@ -95,7 +97,7 @@ export default function Profile() {
           </Form.Item>
           <Form.Item
             label='Avatar image (url)'
-            name='image'
+            name='oldImage'
             rules={[{ type: "url", message: "Please enter a valid URL!" }]}
           >
             <Input placeholder='Avatar image' />

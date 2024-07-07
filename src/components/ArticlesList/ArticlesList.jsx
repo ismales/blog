@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { ConfigProvider, Pagination } from "antd";
 import { useGetAllArticlesQuery } from "../../redux/articlesApi";
 import ArticlePreview from "../ArticlePreview/ArticlePreview";
@@ -7,13 +8,14 @@ import styles from "./ArticlesList.module.scss";
 
 export default function ArticlesList() {
   const navigate = useNavigate();
+  const token = useSelector((state) => state.token.token);
 
   const pageParam = new URLSearchParams(useLocation().search).get("page") || 1;
   const [currentPage, setCurrentPage] = useState(pageParam);
 
   const itemsPerPage = 5;
   const offset = (currentPage - 1) * itemsPerPage;
-  const { data, isLoading, isError } = useGetAllArticlesQuery(offset);
+  const { data, isLoading, isError, refetch } = useGetAllArticlesQuery(offset);
 
   const { articles = [], articlesCount = 0 } = data || {};
 
@@ -26,6 +28,10 @@ export default function ArticlesList() {
   useEffect(() => {
     setCurrentPage(pageParam);
   }, [pageParam]);
+
+  useEffect(() => {
+    refetch();
+  }, [token, refetch]);
 
   const content = (
     <>

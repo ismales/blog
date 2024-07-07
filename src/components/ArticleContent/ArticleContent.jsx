@@ -1,20 +1,25 @@
 import Markdown from "react-markdown";
 import { useNavigate, useParams } from "react-router";
-import { useSelector } from "react-redux";
 import { ConfigProvider, Button, Flex, message, Popconfirm } from "antd";
 import { useDeleteArticleMutation, useGetArticleQuery } from "../../redux/articlesApi";
 import ArticleInfo from "../ArticleInfo/ArticleInfo";
 import Author from "../Author/Author";
 
 import styles from "./ArticleContent.module.scss";
+import { useGetUserQuery } from "../../redux/userApi";
 
 export default function ArticleContent() {
   const navigate = useNavigate();
   const { slug } = useParams();
 
-  const { data, isLoading } = useGetArticleQuery(slug);
-  const { article = {} } = data || {};
-  const { username } = useSelector((state) => state.user);
+  const { data: articleData, isLoading } = useGetArticleQuery(slug);
+  const { article } = articleData || {};
+  const { author, createdAt } = article || {};
+
+  const { data: userData } = useGetUserQuery();
+  const { user } = userData || {};
+  const { username } = user || {};
+
   const [deleteArticle] = useDeleteArticleMutation();
 
   const onConfirm = async () => {
@@ -48,8 +53,8 @@ export default function ArticleContent() {
       <div className={styles["article-short-info"]}>
         <ArticleInfo article={article} />
         <Flex vertical gap={30}>
-          <Author author={article.author} createdAt={article.createdAt} />
-          {article.author?.username === username && manageButtons}
+          <Author author={author} createdAt={createdAt} />
+          {author.username === username && manageButtons}
         </Flex>
       </div>
       <Markdown className={styles["article-body"]}>{article.body}</Markdown>

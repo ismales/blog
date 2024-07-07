@@ -6,6 +6,7 @@ import { useLikeArticleMutation, useUnLikeArticleMutation } from "../../redux/ar
 import styles from "./ArticleInfo.module.scss";
 
 const { Title, Paragraph } = Typography;
+
 export default function ArticleInfo({ article }) {
   const [likeArtcile] = useLikeArticleMutation();
   const [unLikeArtcile] = useUnLikeArticleMutation();

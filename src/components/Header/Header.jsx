@@ -1,7 +1,8 @@
+import { Button, message, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, message, Typography } from "antd";
-import { logOut } from "../../redux/userSlice";
+import { useGetUserQuery } from "../../redux/userApi";
+import { logOut } from "../../redux/tokenSlice";
 import Author from "../Author/Author";
 import styles from "./Header.module.scss";
 
@@ -9,7 +10,11 @@ const { Title } = Typography;
 
 export default function Header() {
   const dispatch = useDispatch();
-  const { token, username, image } = useSelector((state) => state.user);
+  const { token } = useSelector((state) => state.token);
+
+  const { data = {} } = useGetUserQuery(null, { skip: !token });
+  const { user = {} } = data;
+  const { username, image } = user;
 
   const handleLogOut = () => {
     message.success("Log out!");

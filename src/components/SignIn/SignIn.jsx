@@ -2,8 +2,8 @@ import { useDispatch } from "react-redux";
 import { ConfigProvider, Flex, Typography, Form, Input, Button, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.scss";
-import { useSigInMutation } from "../../redux/userApi";
-import { signIn } from "../../redux/userSlice";
+import { useSignInMutation } from "../../redux/userApi"; // добавлено
+import { signIn } from "../../redux/tokenSlice";
 
 const { Title, Text } = Typography;
 
@@ -11,7 +11,7 @@ export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [logInAccount, { isLoading }] = useSigInMutation();
+  const [logInAccount, { isLoading }] = useSignInMutation();
 
   const handleFinish = async ({ email, password }) => {
     const request = {
@@ -23,10 +23,11 @@ export default function SignIn() {
 
     await logInAccount(request)
       .unwrap()
-      .then((data) => {
+      .then(async (data) => {
         message.success("Sign in!");
+        dispatch(signIn(data.user.token));
+
         navigate("/");
-        dispatch(signIn(data.user));
       })
       .catch(() => message.error("Email or password is invalid"));
   };
@@ -54,16 +55,20 @@ export default function SignIn() {
         <Title level={4}>Sign In</Title>
         <Form form={form} layout='vertical' size='large' style={{ width: "100%" }} onFinish={handleFinish}>
           <Form.Item
-            label='Email adress'
+            label='Email address'
             name='email'
             rules={[
               { required: true, message: "Please input your email!" },
               { type: "email", message: "Please enter a valid email!" },
             ]}
           >
-            <Input placeholder='Email adress' />
+            <Input placeholder='Email address' />
           </Form.Item>
-          <Form.Item label='Password' name='password' rules={[{ required: true, message: "Please input your email!" }]}>
+          <Form.Item
+            label='Password'
+            name='password'
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
             <Input.Password placeholder='Password' />
           </Form.Item>
           <Form.Item>

@@ -1,8 +1,8 @@
 import { Flex } from "antd";
 import Author from "../Author/Author";
+import ArticleInfo from "../ArticleInfo/ArticleInfo";
 
 import styles from "./ArticlePreview.module.scss";
-import ArticleInfo from "../ArticleInfo/ArticleInfo";
 
 export default function ArticlePreview({ article }) {
   return (

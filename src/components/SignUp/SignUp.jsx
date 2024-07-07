@@ -1,7 +1,7 @@
 import { ConfigProvider, Flex, Typography, Form, Input, Checkbox, Button, Divider, message } from "antd";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { signIn } from "../../redux/userSlice";
+import { signIn } from "../../redux/tokenSlice";
 
 import styles from "./SignUp.module.scss";
 import { useRegisterUserMutation } from "../../redux/userApi";
